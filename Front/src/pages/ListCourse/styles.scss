@@ -1,0 +1,12 @@
+.container-list {
+  .card + .card {
+    margin-left: 10px;
+  }
+
+  .card {
+    a {
+      text-decoration: none;
+      color: var(--dark);
+    }
+  }
+}
