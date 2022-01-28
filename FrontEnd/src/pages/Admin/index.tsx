@@ -1,5 +1,12 @@
 import React from 'react';
-import { AiOutlinePlusCircle } from 'react-icons/ai';
+import {
+    AiOutlineDelete,
+    AiOutlinePlusCircle,
+    AiOutlineUser
+} from 'react-icons/ai';
+import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Swal from 'sweetalert2';
 import { ServiceVideo } from '../../services/api';
 import { ICourse, ServiceCourse } from '../../services/api/course';
 import CreateCourse from './modalCreateCourse';
@@ -16,6 +23,8 @@ const Admin: React.FC = () => {
     const [listCourse, setListCourse] = React.useState<ICourse[]>([]);
     const [listVideo, setListVideo] = React.useState<any[]>([]);
 
+    const history = useHistory();
+
     const HandlerSelectCourse = (courseId: number) => {
         ServiceVideo.list(courseId)
             .then((res) => {
@@ -24,6 +33,26 @@ const Admin: React.FC = () => {
             .catch((err) => {
                 console.log(err);
             });
+    };
+
+    const handlerDeleteVideo = (id: number) => {
+        Swal.fire({
+            title: 'Tem certeza que deseja excluir o video?',
+            text: 'Você não poderá reverter isso!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sim, excluir!'
+        }).then((resp) => {
+            if (!resp.dismiss) {
+                ServiceVideo.delete(id)
+                    .then((resp) => {
+                        toast.success('Video excluído com sucesso!');
+                    })
+                    .catch(console.log);
+            }
+        });
     };
 
     React.useEffect(() => {
@@ -54,18 +83,24 @@ const Admin: React.FC = () => {
                     </div>
                     <div className="list-group">
                         {listCourse.map((course) => (
-                            <a
+                            <button
                                 onClick={() => setIdSelectCourse(course.id)}
-                                href="#"
                                 className={
-                                    'list-group-item list-group-item-action ' +
+                                    'list-group-item list-group-item-action d-flex justify-content-between align-items-center ' +
                                     (idSelectCourse === course.id
                                         ? 'active'
                                         : '')
                                 }
                             >
                                 {course.name}
-                            </a>
+                                <button
+                                    onClick={() =>
+                                        history.push('/class/' + course.id)
+                                    }
+                                >
+                                    <AiOutlineUser size={25} />
+                                </button>
+                            </button>
                         ))}
                     </div>
                 </div>
@@ -90,12 +125,16 @@ const Admin: React.FC = () => {
                             )}
                             <div className="list-group">
                                 {listVideo.map((video) => (
-                                    <a
-                                        href="#"
-                                        className="list-group-item list-group-item-action"
-                                    >
+                                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                         {video.title}
-                                    </a>
+                                        <button
+                                            onClick={() =>
+                                                handlerDeleteVideo(video.id)
+                                            }
+                                        >
+                                            <AiOutlineDelete size={25} />
+                                        </button>
+                                    </button>
                                 ))}
                             </div>
                             {listVideo.length === 0 && idSelectCourse && (

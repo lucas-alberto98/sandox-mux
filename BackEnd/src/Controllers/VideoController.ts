@@ -98,6 +98,38 @@ class VideoController {
             });
         }
     }
+
+    async destroy(req: Request, res: Response) {
+        const { videoId } = req.params;
+        const userId = req.userId;
+
+        if (!videoId) {
+            return res
+                .status(400)
+                .json({ code: 'NO_ID', message: 'id is required' });
+        }
+
+        const has_access = await VideoModel.findOne({
+            where: {
+                id: videoId,
+                owner_user_id: userId
+            }
+        });
+
+        if (!has_access) {
+            return res.status(400).json({
+                code: 'NO_ACCESS',
+                message: 'You do not have access to this video'
+            });
+        }
+
+        try {
+            await VideoModel.destroy({ where: { id: videoId } });
+            return res.json({ message: 'Video deleted' });
+        } catch (err) {
+            return res.status(400).json({ error: err.message });
+        }
+    }
 }
 
 export default new VideoController();

@@ -28,5 +28,7 @@ export const ServiceVideo = {
     get: ({ video_id }: IVideoView) =>
         application.get<IVideo>('/video/view', { params: { video_id } }),
     complete: ({ ...data }: IVideoComplete) =>
-        application.put(`video/upload/${data.uploadId}/complete`, data)
+        application.put(`video/upload/${data.uploadId}/complete`, data),
+
+    delete: (video_id: number) => application.delete(`/video/${video_id}`)
 };
