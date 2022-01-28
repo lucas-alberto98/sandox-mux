@@ -64,6 +64,17 @@ class CourseController {
             return res.status(400).json({ error: error.message });
         }
     }
+
+    async owner(req: Request, res: Response) {
+        const user_id = req.userId;
+
+        try {
+            const courses = await Course.findAll({
+                attributes: ['id', 'name', 'description', 'enable'],
+                where: { owner_user_id: user_id }
+            });
+        } catch (err) {}
+    }
 }
 
 export default new CourseController();

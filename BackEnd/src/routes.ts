@@ -19,6 +19,7 @@ routes.post('/courses', CourseController.store);
 routes.put('/courses/:courseId', CourseController.update);
 
 routes.get('/courses', CourseController.index);
+routes.get('/courses-owner', CourseController.owner);
 routes.get('/courses/:courseId', CourseController.show);
 
 routes.post('/courses/:courseId/classes', ClassController.store);
@@ -55,6 +56,7 @@ routes.get('/course/:courseId/videos', VideoController.index);
 routes.post('/video/upload', VideoUploadController.store);
 routes.put('/video/upload/:uploadId/complete', VideoUploadController.update);
 routes.get('/video', VideoController.index);
+routes.delete('/video/:videoId', VideoController.destroy);
 routes.get('/video/upload', VideoUploadController.index);
 routes.get('/video/view', VideoController.show);
 // routes.get("/assets", VideoController.get);
